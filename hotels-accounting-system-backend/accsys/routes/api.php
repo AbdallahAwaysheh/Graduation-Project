@@ -21,27 +21,58 @@ use App\Http\Controllers\{
     BookingController,
     ExpenseController,
     PaymentController,
-    FinancialReportController
+    FinancialReportController,
+    LoginController
 };
 
-// API User 
-Route::apiResource('users', UserController::class);
+// API Login
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:api');
 
-// API Guest 
-Route::apiResource('guests', GuestController::class);//
 
-// API Room 
-Route::apiResource('rooms', RoomController::class);//add , delete , change status
+// API Admin
+Route::middleware(['auth:api', 'role:admin'])->group(function () {
+    // API User
+    Route::apiResource('users', UserController::class);
+    // API FinancialReport
+    Route::apiResource('financial-reports', FinancialReportController::class); //crud ( Manager & Admin)
+    // API Guest
+    Route::apiResource('guests', GuestController::class);//View For Accountant & Manager
+    // API Room
+    Route::apiResource('rooms', RoomController::class);//add , delete , change status (Accountant & Manager)
+    // API Booking
+    Route::apiResource('bookings', BookingController::class);// delete , Update (Accountant & Manager)
+    // API Expense
+    Route::post('/expenses', [ExpenseController::class, 'store']);//crud (Accountant & Manager)
+    // API Payment
+    Route::apiResource('payments', PaymentController::class); //view (Accountant & Manager)
+});
 
-// API Booking 
-Route::apiResource('bookings', BookingController::class);//view
+// API Manager
+Route::middleware(['auth:api', 'role:manager'])->group(function () {
+    Route::apiResource('guests', GuestController::class);//View For Accountant & Manager
+    Route::apiResource('rooms', RoomController::class);//add , delete , change status (Accountant & Manager)
+    Route::apiResource('bookings', BookingController::class);// delete , Update (Accountant & Manager)
+    Route::post('/expenses', [ExpenseController::class, 'store']);//crud (Accountant & Manager)
+    Route::apiResource('payments', PaymentController::class); //view (Accountant & Manager)
+    Route::apiResource('financial-reports', FinancialReportController::class); //crud ( Manager & Admin)
+});
 
-// API Expense 
-Route::apiResource('expenses', ExpenseController::class);//crud
+// API Accountant
+Route::middleware(['auth:api', 'role:accountant'])->group(function () {
+    Route::apiResource('guests', GuestController::class);//View For Accountant & Manager
+    Route::apiResource('rooms', RoomController::class);//add , delete , change status (Accountant & Manager)
+    Route::apiResource('bookings', BookingController::class);// delete , Update (Accountant & Manager)
+    Route::post('/expenses', [ExpenseController::class, 'store']);//crud (Accountant & Manager)
+    Route::apiResource('payments', PaymentController::class); //view (Accountant & Manager)
+    Route::prefix('bookingsQuery')->group(function () {
+        Route::get('today', [BookingController::class, 'getBookingsToday']);
+    });
+});
 
-// API Payment 
-Route::apiResource('payments', PaymentController::class);//veiw
 
-// API Financial Report 
-Route::apiResource('financial-reports', FinancialReportController::class); //crud
+
+
+
+
 

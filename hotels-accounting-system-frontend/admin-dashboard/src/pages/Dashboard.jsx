@@ -7,12 +7,19 @@ import StatCard from '../components/StatCard'
 import axios from 'axios';
 import { Zap, Users, User, DollarSign } from 'lucide-react';
 import { s } from 'framer-motion/client';
+import BookingChart from '../components/Dashboard/BookingChart';
+import PaymentChart from '../components/Dashboard/PaymentChart';
+import ExpensePieChart from '../components/Expenses/ExpensesChart';
+
 
 
 
 function Dashboard() {
 
   const [totalSales, setTotalSales] = React.useState(0);
+  const [payments, setPayments] = React.useState([]);
+  const [bookings, setBookings] = React.useState([]);
+  const [expenses, setExpenses] = React.useState([]);
   const [totalBookings, setTotalBookings] = React.useState(0);
   const [totalGuests, setTotalGuests] = React.useState(0);
   const [totalExpenses, setTotalExpenses] = React.useState(0);
@@ -20,11 +27,13 @@ function Dashboard() {
   const [loading, setLoading] = React.useState(true);
   const [totalRevenue, setTotalRevenue] = React.useState(0);
 
+
   React.useEffect(() => {
 
     let total_Expenses = 0;
     axios.get('http://127.0.0.1:8000/api/expenses')
       .then(response => {
+        setExpenses(response.data);
         response.data.forEach((item) => {
           total_Expenses += JSON.parse(item.amount)
         });
@@ -51,6 +60,8 @@ function Dashboard() {
           total += JSON.parse(item.amount_paid)
         });
         setTotalSales(total);
+        setPayments(response.data);
+        console.log(response.data)
         setLoading(false);
         setTotalRevenue(total - total_Expenses);
       })
@@ -61,6 +72,8 @@ function Dashboard() {
     axios.get('http://127.0.0.1:8000/api/bookings')
       .then(response => {
         setTotalBookings(response.data.length);
+        setBookings(response.data);
+
         setLoading(false);
       })
       .catch(error => {
@@ -86,8 +99,14 @@ function Dashboard() {
           <StatCard name="Bookings" value={totalBookings} icon={Users} color="#34d399" />
           <StatCard name="Total Guests" value={totalGuests} icon={User} color="#34d399" />
           <StatCard name="Total Revenue" value={`$${totalRevenue}`} icon={Zap} color="#34d399" />
+        </motion.div>
+        }
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+          <BookingChart bookings={bookings} />
+          <PaymentChart payments={payments} />
+          <ExpensePieChart expenses={expenses} />
+        </div>
 
-        </motion.div>}
 
       </main>
     </div>

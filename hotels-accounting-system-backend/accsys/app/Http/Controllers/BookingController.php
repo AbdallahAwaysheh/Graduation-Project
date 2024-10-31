@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use App\Models\Payment;
+use App\Models\Room;
 
 class BookingController extends Controller
 {
@@ -31,13 +33,41 @@ class BookingController extends Controller
     {
         $booking = Booking::findOrFail($id);
         $booking->update($request->all());
+
+        $payment = Payment::where('booking_id', $id)->first();
+        if ($payment) {
+            $payment->update([
+                'amount_paid' => $request->input('total_amount'),
+            ]);
+        }
+
+        $room = Room::findOrFail($request->room_id);
+        $room->update(['status' => 'occupied']);
         return response()->json($booking);
     }
 
-    public function destroy($id)
+
+    public function destroy( $id)
     {
-        Booking::destroy($id);
+        $booking = Booking::findOrFail($id);
+        $room = Room::findOrFail($booking->room_id);
+        $room->update(['status' => 'available']);
+        $booking->delete();
+
         return response()->json(['message' => 'Booking deleted successfully']);
+    }
+    public function getBookingsToday()
+    {
+       
+        $today = date('Y-m-d');
+        $bookings = Booking::whereDate('check_in_date', $today)->get();
+        if ($bookings->isEmpty()) {
+            return response()->json([
+                'message' => 'No bookings found for today',
+                'data' => [],
+            ], 200);
+        }
+        return response()->json($bookings);
     }
 }
 

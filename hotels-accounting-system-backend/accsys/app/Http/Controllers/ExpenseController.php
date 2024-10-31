@@ -1,6 +1,4 @@
 <?php
-
-
 namespace App\Http\Controllers;
 
 use App\Models\Expense;
@@ -16,8 +14,25 @@ class ExpenseController extends Controller
 
     public function store(Request $request)
     {
-        $expense = Expense::create($request->all());
-        return response()->json($expense);
+       
+        // Validate incoming request data
+        $request->validate([
+            'description' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'expense_date' => 'required|date',
+            'category' => 'required|string|max:100',
+        ]);
+
+        // Create the expense and set the 'created_by' field to the authenticated user's ID
+        $expense = Expense::create([
+            'description' => $request->description,
+            'amount' => $request->amount,
+            'expense_date' => $request->expense_date,
+            'category' => $request->category,
+            'created_by' => auth()->id(), // Automatically assigns the authenticated user's ID
+        ]);
+
+        return response()->json($expense, 201);
     }
 
     public function show($id)
@@ -28,8 +43,19 @@ class ExpenseController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validate incoming request data
+        $request->validate([
+            'description' => 'sometimes|required|string|max:255',
+            'amount' => 'sometimes|required|numeric',
+            'expense_date' => 'sometimes|required|date',
+            'category' => 'sometimes|required|string|max:100',
+            'created_by' => 'sometimes|required|integer|exists:users,id',
+        ]);
+
+        // Find and update the expense
         $expense = Expense::findOrFail($id);
         $expense->update($request->all());
+
         return response()->json($expense);
     }
 
@@ -39,4 +65,3 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense deleted successfully']);
     }
 }
-
