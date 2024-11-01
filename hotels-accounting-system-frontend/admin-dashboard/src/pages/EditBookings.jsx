@@ -19,6 +19,7 @@ const EditBooking = () => {
 
     // Fetch booking details when the component loads
     useEffect(() => {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
         axios.get(`http://127.0.0.1:8000/api/bookings/${id}`)
             .then(response => {
                 setBooking(response.data);
@@ -56,7 +57,7 @@ const EditBooking = () => {
     // Submit the form data (update booking)
     const handleSubmit = (e) => {
         e.preventDefault();
-
+        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
         axios.put(`http://127.0.0.1:8000/api/bookings/${id}`, formData)
             .then(response => {
                 console.log('Booking updated successfully:', response.data);

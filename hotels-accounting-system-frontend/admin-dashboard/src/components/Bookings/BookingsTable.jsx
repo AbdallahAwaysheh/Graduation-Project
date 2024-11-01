@@ -10,6 +10,7 @@ function BookingsTable() {
     const [bookings, setBookings] = useState([]);
     const [error, setError] = useState(null);
     useEffect(() => {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
         axios.get('http://127.0.0.1:8000/api/bookings')
             .then(response => {
                 setBookings(response.data);

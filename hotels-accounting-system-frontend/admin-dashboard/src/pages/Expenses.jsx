@@ -21,7 +21,6 @@ function Expenses() {
     axios.get('http://127.0.0.1:8000/api/expenses')
       .then(response => {
         setExpenses(response.data);
-        console.log(response.data);
       })
       .catch(() => {
         setError('Failed to load expenses. Please try again.');
@@ -44,6 +43,8 @@ function Expenses() {
       setErrorMessage('');
 
       try {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+
         await axios.put(`http://127.0.0.1:8000/api/expenses/${editExpense.id}`, {
           description,
           amount,

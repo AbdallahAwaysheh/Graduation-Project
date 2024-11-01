@@ -1,12 +1,9 @@
 import React from 'react'
-
-
 import Header from '../components/Header'
 import { motion } from 'framer-motion'
 import StatCard from '../components/StatCard'
 import axios from 'axios';
 import { Zap, Users, User, DollarSign } from 'lucide-react';
-import { s } from 'framer-motion/client';
 import BookingChart from '../components/Dashboard/BookingChart';
 import PaymentChart from '../components/Dashboard/PaymentChart';
 import ExpensePieChart from '../components/Expenses/ExpensesChart';
@@ -31,6 +28,7 @@ function Dashboard() {
   React.useEffect(() => {
 
     let total_Expenses = 0;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
     axios.get('http://127.0.0.1:8000/api/expenses')
       .then(response => {
         setExpenses(response.data);
@@ -61,7 +59,6 @@ function Dashboard() {
         });
         setTotalSales(total);
         setPayments(response.data);
-        console.log(response.data)
         setLoading(false);
         setTotalRevenue(total - total_Expenses);
       })
