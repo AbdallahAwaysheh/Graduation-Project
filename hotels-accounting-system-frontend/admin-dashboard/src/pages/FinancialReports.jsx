@@ -8,7 +8,6 @@ const FinancialReport = () => {
   const [report, setReport] = useState(null);
   const [error, setError] = useState('');
   const reportRef = useRef(); // Reference for printing
-  const [users, setUsers] = useState([]);
 
   const fetchReport = async () => {
     try {
@@ -24,14 +23,6 @@ const FinancialReport = () => {
     } catch (err) {
       setError('Failed to load financial report. Please try again.');
       console.error('Error fetching financial report:', err);
-    }
-    try {
-      // Fetch users
-      const usersResponse = await axios.get('http://127.0.0.1:8000/api/users');
-      setUsers(usersResponse.data);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setError('Failed to load users. Please check your permissions.');
     }
   };
 

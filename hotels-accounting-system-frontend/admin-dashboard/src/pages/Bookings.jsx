@@ -81,7 +81,7 @@ function Bookings() {
             <StatCard name="Bookings for today" value={totalBookingsToday} icon={Book} color="#34d399" />
             <StatCard name="Guests" value={totalGuests} icon={User} color="#34d399" />
           </motion.div>
-          <BookingsTable bookings={bookings} />
+          <BookingsTable/>
         </>
       )}
 

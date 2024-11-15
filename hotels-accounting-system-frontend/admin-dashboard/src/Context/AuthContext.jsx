@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
     const [role, setRole] = useState(null);
 
     useEffect(() => {
-        
+
         // Check if token exists in localStorage when the app loads
         const token = localStorage.getItem('token');
         if (token) {
@@ -19,9 +19,11 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = (token) => {
+
         localStorage.setItem('token', token);
         setIsAuthenticated(true);
         const decoded = jwtDecode(token);
+        console.log(decoded);
         setRole(decoded.role);
     };
 

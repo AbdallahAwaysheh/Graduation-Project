@@ -18,7 +18,7 @@ const PaymentsTable = () => {
                     },
                 });
                 setPayments(response.data);
-                setFilteredPayments(response.data); // Set initial filtered payments to all payments
+                setFilteredPayments(response.data); //initial filtered payments(all payments)
             } catch (error) {
                 setError('Failed to load payments. Please try again.');
                 console.error('Error fetching payments:', error);
@@ -74,9 +74,6 @@ const PaymentsTable = () => {
                                 Booking ID
                             </th>
                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                                Payment Method
-                            </th>
-                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                                 Amount Paid
                             </th>
                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
@@ -92,7 +89,6 @@ const PaymentsTable = () => {
                             filteredPayments.map((payment) => (
                                 <tr key={payment.id} className="border-b border-gray-700">
                                     <td className="px-4 py-2 text-sm text-gray-300">{payment.booking_id}</td>
-                                    <td className="px-4 py-2 text-sm text-gray-300">{payment.payment_method}</td>
                                     <td className="px-4 py-2 text-sm text-gray-300">${parseFloat(payment.amount_paid).toFixed(2)}</td>
                                     <td className="px-4 py-2 text-sm text-gray-300">{payment.payment_method}</td>
                                     <td className="px-4 py-2 text-sm text-gray-300">{new Date(payment.payment_date).toLocaleDateString()}</td>

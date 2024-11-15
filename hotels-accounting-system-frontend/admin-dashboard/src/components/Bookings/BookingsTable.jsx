@@ -60,8 +60,8 @@ function BookingsTable() {
                 <div className='relative'>
                     <input
                         type='text'
-                        placeholder='Search bookings...'
-                        className='bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-40'
+                        placeholder='Search bookings by number or name...'
+                        className='bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 lg:w-80 sm:w-40'
                         onChange={handleSearch}
                         value={searchTerm}
                     />
